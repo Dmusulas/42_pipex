@@ -6,17 +6,12 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:40:51 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/04/24 21:24:17 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:51:04 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// In this scenario, ft_parse_cmds will create an array like this:
-// ["/bin/cat", "/usr/bin/head", "/usr/bin/wc"], and the ft_parse_args will use ft_split to yield a 2D array like this one:
-// [["cat"], ["head", "-n", "5"], ["wc", "-l"]] (remember to NULL terminate your arrays!).
-
-// char **parse_args(*argv){}
-// char **parse_args(*argv){}
 #include "libft.h"
+#include <unistd.h>
 
 char	*find_path(char **envp)
 {
@@ -26,3 +21,31 @@ char	*find_path(char **envp)
 	}
 	return (*envp);
 }
+
+static char	*find_cmd(char *paths, char *cmd)
+{
+	char	*temp;
+	char	*return_cmd;
+
+	while (*paths)
+	{
+		temp = ft_strjoin(paths, "/");
+		return_cmd = ft_strjoin(temp, cmd);
+		free(temp);
+		if (!access(return_cmd, X_OK))
+			return (return_cmd);
+		free(return_cmd);
+		paths++;
+	}
+	return (NULL);
+}
+
+char	*parse_cmds(int argc, char **argv, char **envp)
+{
+	char	**cmds;
+}
+
+// char	**parse_args(char **argv)
+// {
+//
+// }

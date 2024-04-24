@@ -6,25 +6,25 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:40:56 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/04/24 21:19:31 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:34:38 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // TODO: Psuedo-code to execute the 
-void	ft_exec()
-{
-	pipe()
-	fork()
-	if (child)
-	{
-		dup2()
-		execve()
-	}
-	else
-	{
-		close()
-	}
-}
+// void	ft_exec()
+// {
+// 	pipe()
+// 	fork()
+// 	if (child)
+// 	{
+// 		dup2()
+// 		execve()
+// 	}
+// 	else
+// 	{
+// 		close()
+// 	}
+// }
 	// int	fds[2];
 	// int	in_fd;
 	// int	out_fd;
