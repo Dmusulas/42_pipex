@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/09 19:43:52 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/04/24 21:20:49 by dmusulas         ###   ########.fr       */
+/*   Created: 2024/04/24 20:54:06 by dmusulas          #+#    #+#             */
+/*   Updated: 2024/04/24 21:21:05 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "pipex.h"
 
-int	main(int argc, char *argv[], char *envp[])
+t_pipex	*init_pipex(void)
 {
 	t_pipex	*pipex;
 
-	pipex = init_pipex();
-	set_infile(argv, pipex);
-	set_outfile(argv[argc - 1], pipex);
+	pipex = malloc(1 * sizeof(t_pipex));
+	return (pipex);
 }
