@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/04/24 21:21:00 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/11 18:12:58 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@
 # include <sys/wait.h>
 # define ERR_INFILE "Infile"
 # define ERR_OUTFILE "Outfile"
+# define ERR_ACCESS "Access"
 
-typedef enum e_bool { false, true }	t_bool;
+typedef enum e_bool
+{
+	false,
+	true
+}	t_bool;
 
 typedef struct s_pipex
 {
@@ -35,8 +40,11 @@ typedef struct s_pipex
 }	t_pipex;
 
 void	msg_error(char *err);
-t_pipex	*init_pipex(void);
+t_pipex	*init_pipex(int argc);
 void	set_outfile(char *argv, t_pipex *pipex);
-void	set_infile(char **argv, t_pipex *pipex);
+void	set_infile(char *argv, t_pipex *pipex);
+char	**parse_cmds(int argc, char **argv, char **envp);
+char	***parse_args(int argc, char **argv);
+void	ft_exec(t_pipex *pipex, char **envp);
 
 #endif

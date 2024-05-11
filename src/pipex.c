@@ -10,51 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO: Psuedo-code to execute the 
-// void	ft_exec()
-// {
-// 	pipe()
-// 	fork()
-// 	if (child)
-// 	{
-// 		dup2()
-// 		execve()
-// 	}
-// 	else
-// 	{
-// 		close()
-// 	}
-// }
-	// int	fds[2];
-	// int	in_fd;
-	// int	out_fd;
-	//
-	// in_fd = open(argv[1], O_RDONLY);
-	// out_fd = open(argv[argc - 1], O_WRONLY | O_CREAT, 0644);
-	// for (int i = 2; i < argc - 1; i++)
-	// {
-	// 	pipe(fds);
-	// 	if (fork() == 0)
-	// 	{
-	// 		dup2(in_fd, 0);
-	// 		close(fds[0]);
-	// 		if (i != argc - 2)
-	// 		{
-	// 			dup2(fds[1], 1);
-	// 		}
-	// 		else
-	// 		{
-	// 			dup2(out_fd, 1);
-	// 		}
-	// 		close(fds[1]);
-	// 		execve(argv[i], &argv[i], envp);
-	// 		exit(1);
-	// 	}
-	// 	close(in_fd);
-	// 	in_fd = fds[0];
-	// 	close(fds[1]);
-	// }
-	// close(out_fd);
-	// while (
-	// 	wait(NULL) > 0);
-	// return (0);
+#include "pipex.h"
+
+void	child_process(t_pipex *pipex, int i, char **envp)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	if (pipe(fd) == -1)
+		msg_error("Pipe");
+	pid = fork();
+	if (pid == -1)
+		msg_error("Error");
+	if (pid == 0)
+	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		waitpid(pid, NULL, 0);
+	}
+}
+
+void	ft_exec(t_pipex *pipex, char **envp)
+{
+	int	i;
+
+	i = 0;
+	dup2(pipex->in_fd, STDIN_FILENO);
+	while (i < pipex->cmd_count - 2)
+	{
+		child_process(pipex, i, envp);
+		i++;
+	}
+	dup2(pipex->out_fd, STDOUT_FILENO);
+	execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
+}

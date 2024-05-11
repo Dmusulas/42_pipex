@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 18:49:37 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/02/22 16:07:21 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/07 22:07:39 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ int		ft_convert_ll(unsigned long long d);
 int		ft_convert_u(unsigned int d);
 int		ft_strspace(const char *s);
 int		ft_strnumspace(const char *s);
+char	*get_next_line(int fd);
 
 #endif

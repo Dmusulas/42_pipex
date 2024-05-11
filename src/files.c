@@ -6,28 +6,34 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:35:05 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/04/24 21:27:31 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/07 19:41:21 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "pipex.h"
 
-void	set_infile(char **argv, t_pipex *pipex)
+// void	here_doc(char *limiter, t_pipex pipex)
+// {
+// 	get_next_line(0);
+// }
+void	set_infile(char *argv, t_pipex *pipex)
 {
-	if (ft_strncmp("here_doc", argv[1], 9))
+	if (!ft_strncmp("here_doc", argv, 9))
 	{
-		//TODO: added here_doc implementations
-		//here_doc(argv[2], pipex)
+		// TODO: add here_doc implementation
+		// here_doc(argv[2], pipex)
 	}
 	else
 	{
-		if (!access(argv[1], R_OK))
+		if (!access(argv, R_OK))
 		{
-			pipex->in_fd = open(argv[1], O_RDONLY);
+			pipex->in_fd = open(argv, O_RDONLY);
 			if (pipex->in_fd < 0)
 				msg_error(ERR_INFILE);
 		}
+		else
+			msg_error(ERR_ACCESS);
 	}
 }
 

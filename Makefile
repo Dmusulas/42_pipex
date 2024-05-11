@@ -6,7 +6,7 @@
 #    By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/25 19:09:47 by dmusulas          #+#    #+#              #
-#    Updated: 2024/03/25 19:19:12 by dmusulas         ###   ########.fr        #
+#    Updated: 2024/05/07 23:43:36 by dmusulas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,13 +26,18 @@ CFLAGS		+= -I$(LIBFT_DIR)/include
 # Sources
 VPATH        = src:include
 INCLUDES     = pipex.h
-PIPEX_SRCS   = main.c
+PIPEX_SRCS   = main.c \
+			   errors.c \
+			   files.c \
+			   parse_args.c \
+			   pipex.c \
+			   utils.c
 PIPEX_OBJS = $(PIPEX_SRCS:%.c=obj/%.o)
 
 all: $(NAME)
 
 $(NAME): $(PIPEX_OBJS) $(LIBFT)
-	$(CC) $(CFLAGS)  $(PIPEX_OBJS) $(LIBFT) -o $@
+	$(CC) $(CFLAGS) $(PIPEX_OBJS) $(LIBFT) -o $@
 
 
 $(PIPEX_OBJS): obj/%.o : src/%.c
