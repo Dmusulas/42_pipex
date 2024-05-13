@@ -31,8 +31,12 @@ void	here_doc(char *limiter, t_pipex *pipex)
 		{
 			line = get_next_line(0);
 			if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
+			{
+				free(line);
 				exit(EXIT_SUCCESS);
+			}
 			write(fd[1], line, ft_strlen(line));
+			free(line);
 		}
 	}
 	else

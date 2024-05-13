@@ -25,5 +25,7 @@ int	main(int argc, char *argv[], char **envp)
 		pipex->cmd_paths = parse_cmds(pipex, argv, envp);
 		pipex->cmd_args = parse_args(pipex, argv);
 		ft_exec(pipex, envp);
+		close(pipex->in_fd);
+		close(pipex->out_fd);
 	}
 }
