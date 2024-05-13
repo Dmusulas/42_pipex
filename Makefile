@@ -6,13 +6,13 @@
 #    By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/25 19:09:47 by dmusulas          #+#    #+#              #
-#    Updated: 2024/05/13 18:59:41 by dmusulas         ###   ########.fr        #
+#    Updated: 2024/05/13 23:26:58 by dmusulas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Variables
 CC           = clang
-CFLAGS       = -Wall -Wextra -Werror -g -Iinclude -Isrc -fsanitize=address
+CFLAGS       = -Wall -Wextra -Werror -g -Iinclude -Isrc
 NAME         = pipex
 MAKE_LIB     = make -C
 RM			 = rm -rf

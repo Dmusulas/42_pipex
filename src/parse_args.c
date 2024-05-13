@@ -84,6 +84,7 @@ static char	*find_cmd(char *paths, char *cmd)
 		}
 		if (!access(full_cmd, X_OK))
 			break ;
+		free(full_cmd);
 		i++;
 	}
 	free_paths(paths_split);

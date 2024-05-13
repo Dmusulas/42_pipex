@@ -26,5 +26,37 @@ t_pipex	*init_pipex(int argc)
 	pipex = malloc(1 * sizeof(t_pipex));
 	pipex->cmd_count = argc - 3;
 	pipex->cmd_start_position = 2;
+	pipex->here_doc = false;
+	pipex->is_invalid_infile = false;
 	return (pipex);
+}
+
+/**
+ */
+void	free_pipex(t_pipex *pipex)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (pipex->cmd_paths[i])
+	{
+		free(pipex->cmd_paths[i]);
+		i++;
+	}
+	free(pipex->cmd_paths);
+	i = 0;
+	while (pipex->cmd_args[i])
+	{
+		j = 0;
+		while (pipex->cmd_args[i][j])
+		{
+			free(pipex->cmd_args[i][j]);
+			j++;
+		}
+		free(pipex->cmd_args[i]);
+		i++;
+	}
+	free(pipex->cmd_args);
+	free(pipex);
 }

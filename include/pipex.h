@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/13 18:57:06 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/13 23:01:06 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_pipex
 
 void	msg_error(char *err);
 t_pipex	*init_pipex(int argc);
+void	free_pipex(t_pipex *pipex);
 void	set_outfile(char *argv, t_pipex *pipex);
 void	set_infile(char **argv, t_pipex *pipex);
 char	**parse_cmds(t_pipex *pipex, char **argv, char **envp);

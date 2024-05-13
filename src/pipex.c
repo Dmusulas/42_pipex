@@ -26,8 +26,12 @@ void	child_process(t_pipex *pipex, int i, char **envp)
 	if (pid == 0)
 	{
 		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
+		if (i == pipex->cmd_count - 1)
+			dup2(pipex->out_fd, STDOUT_FILENO);
+		else
+			dup2(fd[1], STDOUT_FILENO);
 		execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
@@ -43,12 +47,9 @@ void	ft_exec(t_pipex *pipex, char **envp)
 
 	i = 0;
 	dup2(pipex->in_fd, STDIN_FILENO);
-	while (i < pipex->cmd_count - 1 && pipex->cmd_count != 1)
+	while (i < pipex->cmd_count)
 	{
-		ft_printf("executing command: %s", pipex->cmd_paths[i]);
 		child_process(pipex, i, envp);
 		i++;
 	}
-	dup2(pipex->out_fd, STDOUT_FILENO);
-	execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
 }

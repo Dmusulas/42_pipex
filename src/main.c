@@ -27,5 +27,6 @@ int	main(int argc, char *argv[], char **envp)
 		ft_exec(pipex, envp);
 		close(pipex->in_fd);
 		close(pipex->out_fd);
+		free_pipex(pipex);
 	}
 }
