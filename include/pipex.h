@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/11 18:12:58 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/13 18:57:06 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <sys/wait.h>
-# define ERR_INFILE "Infile"
-# define ERR_OUTFILE "Outfile"
-# define ERR_ACCESS "Access"
+# define ERR_OUTFILE "Outfile error"
+# define ERR_INFILE "Infile error"
+# define ERR_ACCESS "Access error"
+# define ERR_MALLOC "Memory allocation error"
+# define ERR_PIPE "Pipe creation error"
 
 typedef enum e_bool
 {
@@ -37,14 +39,16 @@ typedef struct s_pipex
 	char	**cmd_paths;
 	char	***cmd_args;
 	int		cmd_count;
+	int		cmd_start_position;
 }	t_pipex;
 
 void	msg_error(char *err);
 t_pipex	*init_pipex(int argc);
 void	set_outfile(char *argv, t_pipex *pipex);
-void	set_infile(char *argv, t_pipex *pipex);
-char	**parse_cmds(int argc, char **argv, char **envp);
-char	***parse_args(int argc, char **argv);
+void	set_infile(char **argv, t_pipex *pipex);
+char	**parse_cmds(t_pipex *pipex, char **argv, char **envp);
+char	***parse_args(t_pipex *pipex, char **argv);
 void	ft_exec(t_pipex *pipex, char **envp);
+void	here_doc(char *limiter, t_pipex *pipex);
 
 #endif

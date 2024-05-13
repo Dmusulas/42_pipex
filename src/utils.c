@@ -19,10 +19,12 @@
  * @param argc is the argument count
  * @return a pointer to newly created struct
  */
-t_pipex	*init_pipex(int argc) {
+t_pipex	*init_pipex(int argc)
+{
 	t_pipex	*pipex;
 
 	pipex = malloc(1 * sizeof(t_pipex));
 	pipex->cmd_count = argc - 3;
+	pipex->cmd_start_position = 2;
 	return (pipex);
 }

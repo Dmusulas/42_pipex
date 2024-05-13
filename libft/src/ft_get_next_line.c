@@ -32,8 +32,8 @@ static char	*readline(char *line, int fd)
 			return (NULL);
 		}
 		buffer[bytes] = '\0';
-		line = ft_strjoin(line, buffer);
-		found = ft_strchr(line, '\n');
+		line = ft_strjoin_gnl(line, buffer);
+		found = ft_strchr_gnl(line, '\n');
 	}
 	free(buffer);
 	return (line);
@@ -44,10 +44,10 @@ static char	*get_remainder(char *line)
 	char	*next_line;
 	char	*remainder;
 
-	next_line = ft_strchr(line, '\n');
+	next_line = ft_strchr_gnl(line, '\n');
 	if (!next_line++)
 		return (NULL);
-	remainder = ft_strdup(next_line);
+	remainder = ft_strdup_gnl(next_line);
 	*next_line = '\0';
 	return (remainder);
 }

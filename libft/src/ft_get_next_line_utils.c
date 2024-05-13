@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	*ft_memcpy_gnl(void *dest, const void *src, size_t n)
 {
 	unsigned char		*cdest;
 	const unsigned char	*csrc;
@@ -26,7 +26,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr_gnl(const char *s, int c)
 {
 	char	char_c;
 
@@ -44,7 +44,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen_gnl(const char *s)
 {
 	size_t	len;
 
@@ -59,30 +59,30 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-char	*ft_strdup(const char *s)
+char	*ft_strdup_gnl(const char *s)
 {
 	char	*new;
 	size_t	len;
 
 	if (!s || !*s)
 		return (NULL);
-	len = ft_strlen(s) + 1;
+	len = ft_strlen_gnl(s) + 1;
 	new = malloc(sizeof(char) * len);
 	if (!new)
 		return (NULL);
-	ft_memcpy(new, s, len);
+	ft_memcpy_gnl(new, s, len);
 	return (new);
 }
 
-char	*ft_strjoin(char *s1, char const *s2)
+char	*ft_strjoin_gnl(char *s1, char const *s2)
 {
 	size_t	total_len;
 	size_t	s1_len;
 	size_t	s2_len;
 	char	*new_s;
 
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
+	s1_len = ft_strlen_gnl(s1);
+	s2_len = ft_strlen_gnl(s2);
 	total_len = s1_len + s2_len + 1;
 	new_s = malloc(sizeof(char) * total_len);
 	if (!new_s)
@@ -91,8 +91,8 @@ char	*ft_strjoin(char *s1, char const *s2)
 			free(s1);
 		return (NULL);
 	}
-	ft_memcpy(new_s, s1, s1_len);
-	ft_memcpy(new_s + s1_len, s2, s2_len + 1);
+	ft_memcpy_gnl(new_s, s1, s1_len);
+	ft_memcpy_gnl(new_s + s1_len, s2, s2_len + 1);
 	if (s1)
 		free(s1);
 	return (new_s);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "pipex.h"
 #include <unistd.h>
 
 /**
@@ -37,6 +38,25 @@ char	*find_path(char **envp)
 	}
 	return (NULL);
 }
+
+/**
+ * Utility function to free memory allocated by splitting PATHs.
+ *
+ * @param paths split paths resulting from ft_split function
+ */
+static void	free_paths(char **paths)
+{
+	int	i;
+
+	i = 0;
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
+}
+
 /**
  * Finds an executable cmd from path
  *
@@ -46,28 +66,27 @@ char	*find_path(char **envp)
  */
 static char	*find_cmd(char *paths, char *cmd)
 {
-	char	*temp;
 	char	*full_cmd;
 	char	**paths_split;
+	int		i;
 
 	paths_split = ft_split(paths, ':');
 	if (!paths_split)
-		return (NULL);
-	while (*paths_split)
+		msg_error(ERR_MALLOC);
+	i = 0;
+	while (paths_split[i])
 	{
-		temp = ft_strjoin(*paths_split, "/");
-		if (!temp)
-			return (NULL);
-		full_cmd = ft_strjoin(temp, cmd);
-		free(temp);
+		full_cmd = ft_strjoin(ft_strjoin(paths_split[i], "/"), cmd);
 		if (!full_cmd)
-			return (NULL);
-		if (!access(full_cmd, X_OK))
 		{
-			break ;
+			free_paths(paths_split);
+			return (NULL);
 		}
-		paths_split++;
+		if (!access(full_cmd, X_OK))
+			break ;
+		i++;
 	}
+	free_paths(paths_split);
 	return (full_cmd);
 }
 
@@ -79,7 +98,7 @@ static char	*find_cmd(char *paths, char *cmd)
  * @param envp environment variable array from the main
  * @return an array with paths to all executbales
  */
-char	**parse_cmds(int cmd_count, char **argv, char **envp)
+char	**parse_cmds(t_pipex *pipex, char **argv, char **envp)
 {
 	char	**cmds;
 	char	*cmd;
@@ -88,14 +107,15 @@ char	**parse_cmds(int cmd_count, char **argv, char **envp)
 
 	i = 0;
 	paths = find_path(envp);
-	cmds = malloc((cmd_count + 1) * sizeof(char *));
-	while (i < cmd_count)
+	cmds = malloc((pipex->cmd_count + 1) * sizeof(char *));
+	if (!cmds)
+		msg_error(ERR_MALLOC);
+	while (i < pipex->cmd_count)
 	{
-		cmd = find_cmd(paths, ft_split(argv[i + 2], ' ')[0]);
+		cmd = find_cmd(paths, ft_split(argv[i + pipex->cmd_start_position],
+					' ')[0]);
 		if (cmd)
-		{
 			cmds[i] = cmd;
-		}
 		i++;
 	}
 	cmds[i] = NULL;
@@ -110,16 +130,18 @@ char	**parse_cmds(int cmd_count, char **argv, char **envp)
  * @param argv argument array from main
  * @return a 2D array with commands and their args
  */
-char	***parse_args(int cmd_count, char **argv)
+char	***parse_args(t_pipex *pipex, char **argv)
 {
 	char	***args;
 	int		i;
 
 	i = 0;
-	args = malloc((cmd_count + 1) * sizeof(char **));
-	while (i < cmd_count)
+	args = malloc((pipex->cmd_count + 1) * sizeof(char **));
+	if (!args)
+		msg_error(ERR_MALLOC);
+	while (i < pipex->cmd_count)
 	{
-		args[i] = ft_split(argv[i + 2], ' ');
+		args[i] = ft_split(argv[i + pipex->cmd_start_position], ' ');
 		i++;
 	}
 	args[i] = NULL;

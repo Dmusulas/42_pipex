@@ -13,22 +13,50 @@
 #include "libft.h"
 #include "pipex.h"
 
-// void	here_doc(char *limiter, t_pipex pipex)
-// {
-// 	get_next_line(0);
-// }
-void	set_infile(char *argv, t_pipex *pipex)
+void	here_doc(char *limiter, t_pipex *pipex)
 {
-	if (!ft_strncmp("here_doc", argv, 9))
+	char	*line;
+	int		fd[2];
+	pid_t	pid;
+
+	if (pipe(fd) == -1)
+		msg_error("Failed to create pipe");
+	pid = fork();
+	if (pid == -1)
+		msg_error("Fork failed");
+	if (pid == 0)
 	{
-		// TODO: add here_doc implementation
-		// here_doc(argv[2], pipex)
+		close(fd[0]);
+		while (1)
+		{
+			line = get_next_line(0);
+			if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
+				exit(EXIT_SUCCESS);
+			write(fd[1], line, ft_strlen(line));
+		}
 	}
 	else
 	{
-		if (!access(argv, R_OK))
+		close(fd[1]);
+		pipex->in_fd = fd[0];
+		wait(NULL);
+	}
+}
+
+void	set_infile(char **argv, t_pipex *pipex)
+{
+	if (!ft_strncmp("here_doc", argv[1], 9))
+	{
+		here_doc(argv[2], pipex);
+		pipex->here_doc = true;
+		pipex->cmd_count = pipex->cmd_count - 1;
+		pipex->cmd_start_position = pipex->cmd_start_position + 1;
+	}
+	else
+	{
+		if (!access(argv[1], R_OK))
 		{
-			pipex->in_fd = open(argv, O_RDONLY);
+			pipex->in_fd = open(argv[1], O_RDONLY);
 			if (pipex->in_fd < 0)
 				msg_error(ERR_INFILE);
 		}
