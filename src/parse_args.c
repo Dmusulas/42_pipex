@@ -105,6 +105,7 @@ char	**parse_cmds(t_pipex *pipex, char **argv, char **envp)
 	char	*cmd;
 	char	*paths;
 	int		i;
+	char	**temp;
 
 	i = 0;
 	paths = find_path(envp);
@@ -113,10 +114,11 @@ char	**parse_cmds(t_pipex *pipex, char **argv, char **envp)
 		msg_error(ERR_MALLOC);
 	while (i < pipex->cmd_count)
 	{
-		cmd = find_cmd(paths, ft_split(argv[i + pipex->cmd_start_position],
-					' ')[0]);
+		temp = ft_split(argv[i + pipex->cmd_start_position], ' ');
+		cmd = find_cmd(paths, temp[0]);
 		if (cmd)
 			cmds[i] = cmd;
+		free_paths(temp);
 		i++;
 	}
 	cmds[i] = NULL;
