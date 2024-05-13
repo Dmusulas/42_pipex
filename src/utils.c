@@ -12,11 +12,17 @@
 
 #include "pipex.h"
 
-t_pipex	*init_pipex(int argc)
-{
+/**
+ * Initiates pipex struct. Argc - 3 is simply:
+ * argument count - program_name (i = 0) - infile (i = 1) - outfile (i = argc)
+ *
+ * @param argc is the argument count
+ * @return a pointer to newly created struct
+ */
+t_pipex	*init_pipex(int argc) {
 	t_pipex	*pipex;
 
 	pipex = malloc(1 * sizeof(t_pipex));
-	pipex->cmd_count = argc - 2;
+	pipex->cmd_count = argc - 3;
 	return (pipex);
 }

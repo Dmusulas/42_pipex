@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "pipex.h"
 
 void	child_process(t_pipex *pipex, int i, char **envp)
@@ -42,11 +43,19 @@ void	ft_exec(t_pipex *pipex, char **envp)
 
 	i = 0;
 	dup2(pipex->in_fd, STDIN_FILENO);
-	while (i < pipex->cmd_count - 2)
+	while (i < pipex->cmd_count - 1)
 	{
+		printf("Executing command %d/%d: %s\n", i + 1, pipex->cmd_count,
+			pipex->cmd_paths[i]);
+		printf("Current stdin fd: %d, stdout fd: %d\n", STDIN_FILENO,
+			STDOUT_FILENO);
 		child_process(pipex, i, envp);
 		i++;
 	}
+	printf("Executing command %d/%d: %s\n", i + 1, pipex->cmd_count,
+		pipex->cmd_paths[i]);
+	printf("Current stdin fd: %d, stdout fd: %d\n", STDIN_FILENO,
+		STDOUT_FILENO);
 	dup2(pipex->out_fd, STDOUT_FILENO);
 	execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
 }

@@ -59,6 +59,7 @@ static char	*find_cmd(char *paths, char *cmd)
 		if (!temp)
 			return (NULL);
 		full_cmd = ft_strjoin(temp, cmd);
+		free(temp);
 		if (!full_cmd)
 			return (NULL);
 		if (!access(full_cmd, X_OK))
@@ -85,19 +86,19 @@ char	**parse_cmds(int cmd_count, char **argv, char **envp)
 	char	*paths;
 	int		i;
 
-	i = 2;
+	i = 0;
 	paths = find_path(envp);
-	cmds = malloc((cmd_count) * sizeof(char *));
-	while (i <= cmd_count)
+	cmds = malloc((cmd_count + 1) * sizeof(char *));
+	while (i < cmd_count)
 	{
-		cmd = find_cmd(paths, ft_split(argv[i], ' ')[0]);
+		cmd = find_cmd(paths, ft_split(argv[i + 2], ' ')[0]);
 		if (cmd)
 		{
-			cmds[i - 2] = cmd;
+			cmds[i] = cmd;
 		}
 		i++;
 	}
-	cmds[i - 2] = NULL;
+	cmds[i] = NULL;
 	free(paths);
 	return (cmds);
 }
@@ -115,12 +116,12 @@ char	***parse_args(int cmd_count, char **argv)
 	int		i;
 
 	i = 0;
-	args = malloc((cmd_count) * sizeof(char **));
-	while (i < cmd_count - 1)
+	args = malloc((cmd_count + 1) * sizeof(char **));
+	while (i < cmd_count)
 	{
 		args[i] = ft_split(argv[i + 2], ' ');
 		i++;
 	}
-	args[cmd_count] = NULL;
+	args[i] = NULL;
 	return (args);
 }
