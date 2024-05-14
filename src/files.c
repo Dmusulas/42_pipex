@@ -14,11 +14,29 @@
 #include "pipex.h"
 #include <stdlib.h>
 
+static void	read_from_urandom(int fd[2])
+{
+	char	buffer[1024];
+	int		urandom_fd;
+	ssize_t	bytes_read;
+
+	urandom_fd = open("/dev/urandom", O_RDONLY);
+	if (urandom_fd < 0)
+		msg_error("Failed to open /dev/urandom");
+	bytes_read = read(urandom_fd, buffer, sizeof(buffer));
+	if (bytes_read > 0)
+		write(fd[1], buffer, bytes_read);
+	close(urandom_fd);
+	exit(EXIT_SUCCESS);
+}
+
 static void	reader_process(int *fd, char *limiter, t_bool dev_urandom)
 {
 	char	*line;
 
 	close(fd[0]);
+	if (dev_urandom)
+		read_from_urandom(fd);
 	while (1)
 	{
 		line = get_next_line(0);
@@ -29,12 +47,10 @@ static void	reader_process(int *fd, char *limiter, t_bool dev_urandom)
 		}
 		write(fd[1], line, ft_strlen(line));
 		free(line);
-		if (dev_urandom)
-			exit(EXIT_SUCCESS);
 	}
 }
 
-void	here_doc(char *limiter, t_pipex *pipex)
+static void	here_doc(char *limiter, t_pipex *pipex, t_bool dev_urandom)
 {
 	int		fd[2];
 	pid_t	pid;
@@ -45,7 +61,7 @@ void	here_doc(char *limiter, t_pipex *pipex)
 	if (pid == -1)
 		msg_error("Fork failed");
 	if (pid == 0)
-		reader_process(fd, limiter, false);
+		reader_process(fd, limiter, dev_urandom);
 	else
 	{
 		close(fd[1]);
@@ -58,13 +74,13 @@ void	set_infile(char **argv, t_pipex *pipex)
 {
 	if (!ft_strncmp("here_doc", argv[1], 9))
 	{
-		here_doc(argv[2], pipex);
+		here_doc(argv[2], pipex, false);
 		pipex->here_doc = true;
-		pipex->cmd_count = pipex->cmd_count - 1;
-		pipex->cmd_start_position = pipex->cmd_start_position + 1;
+		pipex->cmd_count -= 1;
+		pipex->cmd_start_position += 1;
 	}
 	else if (!ft_strncmp("/dev/urandom", argv[1], 13))
-		here_doc("\n", pipex);
+		here_doc("\n", pipex, true);
 	else
 	{
 		if (!access(argv[1], R_OK))
@@ -81,9 +97,9 @@ void	set_infile(char **argv, t_pipex *pipex)
 void	set_outfile(char *argv, t_pipex *pipex)
 {
 	if (pipex->here_doc)
-		pipex->out_fd = open(argv, O_WRONLY | O_CREAT | O_APPEND, 0000644);
+		pipex->out_fd = open(argv, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
-		pipex->out_fd = open(argv, O_CREAT | O_RDWR | O_TRUNC, 0000644);
+		pipex->out_fd = open(argv, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (pipex->out_fd < 0)
 		msg_error(ERR_OUTFILE);
 }

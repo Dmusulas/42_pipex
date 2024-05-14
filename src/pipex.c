@@ -10,34 +10,52 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "pipex.h"
 
-void	child_process(t_pipex *pipex, int i, char **envp)
+static void	redirect_fds(int old_fd, int new_fd)
 {
-	pid_t	pid;
-	int		fd[2];
+	dup2(old_fd, new_fd);
+	close(old_fd);
+}
 
-	if (pipe(fd) == -1)
-		msg_error("Pipe");
-	pid = fork();
-	if (pid == -1)
-		msg_error("Error");
-	if (pid == 0)
+static void	setup_pipes(t_pipex *pipex, int *fd, int i)
+{
+	if (i == 0)
+		redirect_fds(pipex->in_fd, STDIN_FILENO);
+	if (i == pipex->cmd_count - 1)
+		redirect_fds(pipex->out_fd, STDOUT_FILENO);
+	if (i < pipex->cmd_count - 1)
 	{
 		close(fd[0]);
-		if (i == pipex->cmd_count - 1)
-			dup2(pipex->out_fd, STDOUT_FILENO);
-		else
-			dup2(fd[1], STDOUT_FILENO);
-		execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
-		exit(EXIT_FAILURE);
+		redirect_fds(fd[1], STDOUT_FILENO);
 	}
-	else
+}
+
+static void	execute_cmd(t_pipex *pipex, char **envp, int i)
+{
+	execve(pipex->cmd_paths[i], pipex->cmd_args[i], envp);
+	msg_error("Execution failed");
+}
+
+static void	child_process(t_pipex *pipex, char **envp, int i)
+{
+	int		fd[2];
+	pid_t	pid;
+
+	if (i < pipex->cmd_count - 1 && pipe(fd) == -1)
+		msg_error("Pipe creation failed");
+	pid = fork();
+	if (pid == -1)
+		msg_error("Fork failed");
+	else if (pid == 0)
+	{
+		setup_pipes(pipex, fd, i);
+		execute_cmd(pipex, envp, i);
+	}
+	if (i < pipex->cmd_count - 1)
 	{
 		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		waitpid(pid, NULL, 0);
+		redirect_fds(fd[0], STDIN_FILENO);
 	}
 }
 
@@ -46,10 +64,11 @@ void	ft_exec(t_pipex *pipex, char **envp)
 	int	i;
 
 	i = 0;
-	dup2(pipex->in_fd, STDIN_FILENO);
 	while (i < pipex->cmd_count)
 	{
-		child_process(pipex, i, envp);
+		child_process(pipex, envp, i);
 		i++;
 	}
+	while (wait(NULL) > 0)
+		;
 }

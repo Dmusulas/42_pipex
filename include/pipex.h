@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/14 14:56:02 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/14 15:36:48 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	set_infile(char **argv, t_pipex *pipex);
 char	**parse_cmds(t_pipex *pipex, char **argv, char **envp);
 char	***parse_args(t_pipex *pipex, char **argv);
 void	ft_exec(t_pipex *pipex, char **envp);
-void	here_doc(char *limiter, t_pipex *pipex);
 void	free_2darray(char **array);
 
 #endif
