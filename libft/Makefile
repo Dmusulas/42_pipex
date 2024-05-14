@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS  = -Wall -Wextra -Werror -g -Iinclude -Isrc
+CFLAGS  = -Wall -Wextra -Werror -g -Iinclude -Isrc -fsanitize=address
 CCA = ar rc
 NAME = libft.a
 OBJS =	$(addprefix obj/,$(SRCS:.c=.o))

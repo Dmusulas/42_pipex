@@ -39,22 +39,15 @@ char	*find_path(char **envp)
 	return (NULL);
 }
 
-/**
- * Utility function to free memory allocated by splitting PATHs.
- *
- * @param paths split paths resulting from ft_split function
- */
-static void	free_paths(char **paths)
+static char	*join_paths(char *path, char *cmd)
 {
-	int	i;
+	char	*temp;
+	char	*full_cmd;
 
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
+	temp = ft_strjoin(path, "/");
+	full_cmd = ft_strjoin(temp, cmd);
+	free(temp);
+	return (full_cmd);
 }
 
 /**
@@ -76,19 +69,19 @@ static char	*find_cmd(char *paths, char *cmd)
 	i = 0;
 	while (paths_split[i])
 	{
-		full_cmd = ft_strjoin(ft_strjoin(paths_split[i], "/"), cmd);
+		full_cmd = join_paths(paths_split[i], cmd);
 		if (!full_cmd)
-		{
-			free_paths(paths_split);
-			return (NULL);
-		}
-		if (!access(full_cmd, X_OK))
 			break ;
+		if (!access(full_cmd, X_OK))
+		{
+			free_2darray(paths_split);
+			return (full_cmd);
+		}
 		free(full_cmd);
 		i++;
 	}
-	free_paths(paths_split);
-	return (full_cmd);
+	free_2darray(paths_split);
+	return (NULL);
 }
 
 /**
@@ -118,7 +111,9 @@ char	**parse_cmds(t_pipex *pipex, char **argv, char **envp)
 		cmd = find_cmd(paths, temp[0]);
 		if (cmd)
 			cmds[i] = cmd;
-		free_paths(temp);
+		else
+			cmds[i] = NULL;
+		free_2darray(temp);
 		i++;
 	}
 	cmds[i] = NULL;

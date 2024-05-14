@@ -38,13 +38,7 @@ void	free_pipex(t_pipex *pipex)
 	int	i;
 	int	j;
 
-	i = 0;
-	while (pipex->cmd_paths[i])
-	{
-		free(pipex->cmd_paths[i]);
-		i++;
-	}
-	free(pipex->cmd_paths);
+	free_2darray(pipex->cmd_paths);
 	i = 0;
 	while (pipex->cmd_args[i])
 	{
@@ -59,4 +53,22 @@ void	free_pipex(t_pipex *pipex)
 	}
 	free(pipex->cmd_args);
 	free(pipex);
+}
+
+/**
+ * Utility function to free memory allocated by splitting PATHs.
+ *
+ * @param paths split paths resulting from ft_split function
+ */
+void	free_2darray(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }
