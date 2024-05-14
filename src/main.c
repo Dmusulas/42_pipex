@@ -6,10 +6,11 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:43:52 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/07 21:18:33 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/14 21:00:11 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "pipex.h"
 
 int	main(int argc, char *argv[], char **envp)
@@ -29,7 +30,5 @@ int	main(int argc, char *argv[], char **envp)
 		free_pipex(pipex);
 	}
 	else
-	{
 		exit(EXIT_FAILURE);
-	}
 }

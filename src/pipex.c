@@ -52,10 +52,13 @@ static void	child_process(t_pipex *pipex, char **envp, int i)
 		setup_pipes(pipex, fd, i);
 		execute_cmd(pipex, envp, i);
 	}
-	if (i < pipex->cmd_count - 1)
+	else
 	{
-		close(fd[1]);
-		redirect_fds(fd[0], STDIN_FILENO);
+		if (i < pipex->cmd_count - 1)
+		{
+			close(fd[1]);
+			redirect_fds(fd[0], STDIN_FILENO);
+		}
 	}
 }
 

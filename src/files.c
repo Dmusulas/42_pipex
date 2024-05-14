@@ -24,33 +24,38 @@ static void	read_from_urandom(int fd[2])
 	if (urandom_fd < 0)
 		msg_error("Failed to open /dev/urandom");
 	bytes_read = read(urandom_fd, buffer, sizeof(buffer));
+	close(urandom_fd);
 	if (bytes_read > 0)
 		write(fd[1], buffer, bytes_read);
-	close(urandom_fd);
-	exit(EXIT_SUCCESS);
+	close(fd[1]);
 }
 
-static void	reader_process(int *fd, char *limiter, t_bool dev_urandom)
+static void	reader_process(int fd[2], char *limiter, t_bool dev_urandom)
 {
 	char	*line;
 
 	close(fd[0]);
 	if (dev_urandom)
 		read_from_urandom(fd);
-	while (1)
+	else
 	{
-		line = get_next_line(0);
-		if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
+		while (1)
 		{
+			line = get_next_line(0);
+			if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
+			{
+				free(line);
+				break ;
+			}
+			write(fd[1], line, ft_strlen(line));
 			free(line);
-			exit(EXIT_SUCCESS);
 		}
-		write(fd[1], line, ft_strlen(line));
-		free(line);
 	}
+	close(fd[1]);
+	exit(EXIT_SUCCESS);
 }
 
-static void	here_doc(char *limiter, t_pipex *pipex, t_bool dev_urandom)
+static void	here_doc(char *limiter, int *in_fd, t_bool dev_urandom)
 {
 	int		fd[2];
 	pid_t	pid;
@@ -65,7 +70,7 @@ static void	here_doc(char *limiter, t_pipex *pipex, t_bool dev_urandom)
 	else
 	{
 		close(fd[1]);
-		pipex->in_fd = fd[0];
+		*in_fd = fd[0];
 		wait(NULL);
 	}
 }
@@ -74,23 +79,28 @@ void	set_infile(char **argv, t_pipex *pipex)
 {
 	if (!ft_strncmp("here_doc", argv[1], 9))
 	{
-		here_doc(argv[2], pipex, false);
+		here_doc(argv[2], &pipex->in_fd, false);
 		pipex->here_doc = true;
 		pipex->cmd_count -= 1;
 		pipex->cmd_start_position += 1;
 	}
 	else if (!ft_strncmp("/dev/urandom", argv[1], 13))
-		here_doc("\n", pipex, true);
+	{
+		here_doc("\n", &pipex->in_fd, true);
+	}
 	else
 	{
-		if (!access(argv[1], R_OK))
+		if (access(argv[1], R_OK) == -1)
 		{
-			pipex->in_fd = open(argv[1], O_RDONLY);
-			if (pipex->in_fd < 0)
-				msg_error(ERR_INFILE);
-		}
-		else
+			free_pipex(pipex);
 			msg_error(ERR_ACCESS);
+		}
+		pipex->in_fd = open(argv[1], O_RDONLY);
+		if (pipex->in_fd < 0)
+		{
+			free_pipex(pipex);
+			msg_error(ERR_INFILE);
+		}
 	}
 }
 
