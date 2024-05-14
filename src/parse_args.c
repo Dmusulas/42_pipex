@@ -12,7 +12,7 @@
 
 #include "libft.h"
 #include "pipex.h"
-#include <unistd.h>
+#include <stdlib.h>
 
 /**
  * This function finds a path of provided command from ENV PATH variable
@@ -81,6 +81,7 @@ static char	*find_cmd(char *paths, char *cmd)
 		i++;
 	}
 	free_2darray(paths_split);
+	ft_printf("%s: command not found\n", cmd);
 	return (NULL);
 }
 

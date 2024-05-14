@@ -12,10 +12,30 @@
 
 #include "libft.h"
 #include "pipex.h"
+#include <stdlib.h>
+
+static void	reader_process(int *fd, char *limiter, t_bool dev_urandom)
+{
+	char	*line;
+
+	close(fd[0]);
+	while (1)
+	{
+		line = get_next_line(0);
+		if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
+		{
+			free(line);
+			exit(EXIT_SUCCESS);
+		}
+		write(fd[1], line, ft_strlen(line));
+		free(line);
+		if (dev_urandom)
+			exit(EXIT_SUCCESS);
+	}
+}
 
 void	here_doc(char *limiter, t_pipex *pipex)
 {
-	char	*line;
 	int		fd[2];
 	pid_t	pid;
 
@@ -25,20 +45,7 @@ void	here_doc(char *limiter, t_pipex *pipex)
 	if (pid == -1)
 		msg_error("Fork failed");
 	if (pid == 0)
-	{
-		close(fd[0]);
-		while (1)
-		{
-			line = get_next_line(0);
-			if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
-			{
-				free(line);
-				exit(EXIT_SUCCESS);
-			}
-			write(fd[1], line, ft_strlen(line));
-			free(line);
-		}
-	}
+		reader_process(fd, limiter, false);
 	else
 	{
 		close(fd[1]);
@@ -56,6 +63,8 @@ void	set_infile(char **argv, t_pipex *pipex)
 		pipex->cmd_count = pipex->cmd_count - 1;
 		pipex->cmd_start_position = pipex->cmd_start_position + 1;
 	}
+	else if (!ft_strncmp("/dev/urandom", argv[1], 13))
+		here_doc("\n", pipex);
 	else
 	{
 		if (!access(argv[1], R_OK))

@@ -6,13 +6,13 @@
 #    By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/25 19:09:47 by dmusulas          #+#    #+#              #
-#    Updated: 2024/05/13 23:41:24 by dmusulas         ###   ########.fr        #
+#    Updated: 2024/05/14 14:31:42 by dmusulas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Variables
-CC           = clang
-CFLAGS       = -Wall -Wextra -Werror -g -Iinclude -Isrc -fsanitize=address
+CC           = cc
+CFLAGS       = -Wall -Wextra -Werror -g -Iinclude -Isrc
 NAME         = pipex
 MAKE_LIB     = make -C
 RM			 = rm -rf
@@ -57,5 +57,7 @@ fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
+
+bonus: $(NAME)
 
 .PHONY: clean fclean all re

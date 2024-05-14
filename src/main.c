@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "pipex.h"
 
 int	main(int argc, char *argv[], char **envp)
@@ -28,5 +27,9 @@ int	main(int argc, char *argv[], char **envp)
 		close(pipex->in_fd);
 		close(pipex->out_fd);
 		free_pipex(pipex);
+	}
+	else
+	{
+		exit(EXIT_FAILURE);
 	}
 }

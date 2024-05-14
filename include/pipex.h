@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/14 14:04:31 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/14 14:56:02 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include <errno.h>
 # define ERR_OUTFILE "Outfile error"
 # define ERR_INFILE "Infile error"
 # define ERR_ACCESS "Access error"
