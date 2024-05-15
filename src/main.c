@@ -30,5 +30,9 @@ int	main(int argc, char *argv[], char **envp)
 		free_pipex(pipex);
 	}
 	else
+	{
+		ft_printf("Program usage: ./pipex <infile|here_doc LIMITER> \
+{cmd...N} <outfile>\n");
 		exit(EXIT_FAILURE);
+	}
 }

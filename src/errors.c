@@ -12,8 +12,15 @@
 
 #include "pipex.h"
 
-void	msg_error(char *err)
+/**
+ * Displays an error message and terminates the program with a failure status.
+ *
+ * @param err The error message to be displayed.
+ */
+void	msg_error(char *err, t_pipex *pipex)
 {
 	perror(err);
+	if (pipex)
+		free_pipex(pipex);
 	exit(EXIT_FAILURE);
 }

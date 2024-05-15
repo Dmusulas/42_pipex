@@ -25,7 +25,7 @@ t_pipex	*init_pipex(int argc)
 
 	pipex = malloc(1 * sizeof(t_pipex));
 	if (!pipex)
-		msg_error(ERR_MALLOC);
+		msg_error(ERR_MALLOC, pipex);
 	pipex->cmd_count = argc - 3;
 	pipex->cmd_start_position = 2;
 	pipex->here_doc = false;
@@ -38,6 +38,9 @@ t_pipex	*init_pipex(int argc)
 }
 
 /**
+ * Frees pipex structure
+ *
+ * @param pipex pointer to pipex object to free
  */
 void	free_pipex(t_pipex *pipex)
 {

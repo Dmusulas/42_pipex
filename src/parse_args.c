@@ -12,7 +12,6 @@
 
 #include "libft.h"
 #include "pipex.h"
-#include <stdlib.h>
 
 /**
  * This function finds a path of provided command from ENV PATH variable
@@ -20,7 +19,7 @@
  * @param envp enviroment string
  * @return pointer to the PATH variable
  */
-char	*find_path(char **envp)
+static char	*find_path(char **envp)
 {
 	char	*prefix;
 	int		prefix_len;
@@ -39,6 +38,14 @@ char	*find_path(char **envp)
 	return (NULL);
 }
 
+/**
+ * Joins a given path and command into a single string representing
+ * the full command path.
+ *
+ * @param path The base path to the command.
+ * @param cmd The command to be appended to the path.
+ * @return A newly allocated string containing the full command path.
+ */
 static char	*join_paths(char *path, char *cmd)
 {
 	char	*temp;
@@ -51,13 +58,15 @@ static char	*join_paths(char *path, char *cmd)
 }
 
 /**
- * Finds an executable cmd from path
+ * Finds an executable cmd from path if not found use calloc to
+ * allocate memory with NULLs so they can be freed propery even if cmd
+ * does not exists.
  *
  * @param paths takes paths retrieved from env variable
  * @param cmd which cmd to find
  * @return a path to cmd in a system
  */
-static char	*find_cmd(char *paths, char *cmd)
+static char	*find_cmd(char *paths, char *cmd, t_pipex *pipex)
 {
 	char	*full_cmd;
 	char	**paths_split;
@@ -65,13 +74,13 @@ static char	*find_cmd(char *paths, char *cmd)
 
 	paths_split = ft_split(paths, ':');
 	if (!paths_split)
-		msg_error(ERR_MALLOC);
+		msg_error(ERR_MALLOC, pipex);
 	i = 0;
 	while (paths_split[i])
 	{
 		full_cmd = join_paths(paths_split[i], cmd);
 		if (!full_cmd)
-			break ;
+			msg_error(ERR_MALLOC, pipex);
 		if (!access(full_cmd, X_OK))
 		{
 			free_2darray(paths_split);
@@ -82,7 +91,7 @@ static char	*find_cmd(char *paths, char *cmd)
 	}
 	free_2darray(paths_split);
 	ft_printf("%s: command not found\n", cmd);
-	return (NULL);
+	return (ft_calloc(1, 1));
 }
 
 /**
@@ -105,11 +114,11 @@ char	**parse_cmds(t_pipex *pipex, char **argv, char **envp)
 	paths = find_path(envp);
 	cmds = malloc((pipex->cmd_count + 1) * sizeof(char *));
 	if (!cmds)
-		msg_error(ERR_MALLOC);
+		msg_error(ERR_MALLOC, pipex);
 	while (i < pipex->cmd_count)
 	{
 		temp = ft_split(argv[i + pipex->cmd_start_position], ' ');
-		cmd = find_cmd(paths, temp[0]);
+		cmd = find_cmd(paths, temp[0], pipex);
 		if (cmd)
 			cmds[i] = cmd;
 		else
@@ -137,7 +146,7 @@ char	***parse_args(t_pipex *pipex, char **argv)
 	i = 0;
 	args = malloc((pipex->cmd_count + 1) * sizeof(char **));
 	if (!args)
-		msg_error(ERR_MALLOC);
+		msg_error(ERR_MALLOC, pipex);
 	while (i < pipex->cmd_count)
 	{
 		args[i] = ft_split(argv[i + pipex->cmd_start_position], ' ');

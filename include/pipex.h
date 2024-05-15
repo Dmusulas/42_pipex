@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/14 15:36:48 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:49:40 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # define ERR_ACCESS "Access error"
 # define ERR_MALLOC "Memory allocation error"
 # define ERR_PIPE "Pipe creation error"
+# define ERR_FORK "Fork creation error"
+# define ERR_EXEC "Child execution error"
 
 typedef enum e_bool
 {
@@ -43,7 +45,7 @@ typedef struct s_pipex
 	int		cmd_start_position;
 }	t_pipex;
 
-void	msg_error(char *err);
+void	msg_error(char *err, t_pipex *pipex);
 t_pipex	*init_pipex(int argc);
 void	free_pipex(t_pipex *pipex);
 void	set_outfile(char *argv, t_pipex *pipex);
