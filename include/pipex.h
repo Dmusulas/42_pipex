@@ -6,7 +6,7 @@
 /*   By: dmusulas <dmusulas@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 19:04:40 by dmusulas          #+#    #+#             */
-/*   Updated: 2024/05/15 17:49:40 by dmusulas         ###   ########.fr       */
+/*   Updated: 2024/05/15 20:02:40 by dmusulas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define ERR_PIPE "Pipe creation error"
 # define ERR_FORK "Fork creation error"
 # define ERR_EXEC "Child execution error"
+# define TEMP_FILE "/tmp/here_doc_12342"
 
 typedef enum e_bool
 {
