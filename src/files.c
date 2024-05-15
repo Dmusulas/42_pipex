@@ -14,7 +14,7 @@
 #include "pipex.h"
 #include <stdlib.h>
 
-static void	read_from_urandom(int fd[2])
+void	read_from_urandom(int fd[2])
 {
 	char	buffer[1024];
 	int		urandom_fd;
@@ -30,7 +30,7 @@ static void	read_from_urandom(int fd[2])
 	close(fd[1]);
 }
 
-static void	reader_process(int fd[2], char *limiter, t_bool dev_urandom)
+void	reader_process(int fd[2], char *limiter, t_bool dev_urandom)
 {
 	char	*line;
 
@@ -55,7 +55,7 @@ static void	reader_process(int fd[2], char *limiter, t_bool dev_urandom)
 	exit(EXIT_SUCCESS);
 }
 
-static void	here_doc(char *limiter, int *in_fd, t_bool dev_urandom)
+void	here_doc(char *limiter, t_pipex *pipex, t_bool dev_urandom)
 {
 	int		fd[2];
 	pid_t	pid;
@@ -66,11 +66,13 @@ static void	here_doc(char *limiter, int *in_fd, t_bool dev_urandom)
 	if (pid == -1)
 		msg_error("Fork failed");
 	if (pid == 0)
+	{
 		reader_process(fd, limiter, dev_urandom);
+	}
 	else
 	{
 		close(fd[1]);
-		*in_fd = fd[0];
+		pipex->in_fd = fd[0];
 		wait(NULL);
 	}
 }
@@ -79,27 +81,27 @@ void	set_infile(char **argv, t_pipex *pipex)
 {
 	if (!ft_strncmp("here_doc", argv[1], 9))
 	{
-		here_doc(argv[2], &pipex->in_fd, false);
+		here_doc(argv[2], pipex, false);
 		pipex->here_doc = true;
 		pipex->cmd_count -= 1;
 		pipex->cmd_start_position += 1;
 	}
 	else if (!ft_strncmp("/dev/urandom", argv[1], 13))
 	{
-		here_doc("\n", &pipex->in_fd, true);
+		here_doc("\n", pipex, true);
 	}
 	else
 	{
 		if (access(argv[1], R_OK) == -1)
 		{
 			free_pipex(pipex);
-			msg_error(ERR_ACCESS);
+			msg_error("Access denied");
 		}
 		pipex->in_fd = open(argv[1], O_RDONLY);
 		if (pipex->in_fd < 0)
 		{
 			free_pipex(pipex);
-			msg_error(ERR_INFILE);
+			msg_error("Failed to open infile");
 		}
 	}
 }
