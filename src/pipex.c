@@ -30,7 +30,8 @@ static void	redirect_fds(int old_fd, int new_fd)
  * command in the pipeline.
  *
 
-	* @param pipex A pointer to a t_pipex structure containing pipeline information.
+ * @param pipex A pointer to a t_pipex structure containing
+ * pipeline information.
  * @param fd An array of two integers representing the pipe file descriptors.
  * @param i The index of the current command in the pipeline.
  */
@@ -52,7 +53,8 @@ static void	setup_pipes(t_pipex *pipex, int *fd, int i)
  * image with a new process image.
  *
 
-	* @param pipex A pointer to a t_pipex structure containing pipeline information.
+ * @param pipex A pointer to a t_pipex structure containing
+ * pipeline information.
  * @param envp An array of environment variables.
  * @param i The index of the command to execute in the pipeline.
  */
@@ -69,11 +71,12 @@ static void	execute_cmd(t_pipex *pipex, char **envp, int i)
  * a command in the pipeline.
  *
 
-	* @param pipex A pointer to a t_pipex structure containing pipeline information.
+ * @param pipex A pointer to a t_pipex structure containing
+ * pipeline information.
  * @param envp An array of environment variables.
  * @param i The index of the current command in the pipeline.
  */
-static void	child_process(t_pipex *pipex, char **envp, int i)
+static void	child_process(t_pipex *pipex, char **envp, int i, int *fd_in)
 {
 	int		fd[2];
 	pid_t	pid;
@@ -85,15 +88,19 @@ static void	child_process(t_pipex *pipex, char **envp, int i)
 		msg_error(ERR_FORK, pipex);
 	else if (pid == 0)
 	{
+		if (i > 0)
+			redirect_fds(*fd_in, STDIN_FILENO);
 		setup_pipes(pipex, fd, i);
 		execute_cmd(pipex, envp, i);
 	}
 	else
 	{
+		if (i > 0)
+			close(*fd_in);
 		if (i < pipex->cmd_count - 1)
 		{
 			close(fd[1]);
-			redirect_fds(fd[0], STDIN_FILENO);
+			*fd_in = fd[0];
 		}
 	}
 }
@@ -103,19 +110,26 @@ static void	child_process(t_pipex *pipex, char **envp, int i)
  * for each command.
  *
 
-	* @param pipex A pointer to a t_pipex structure containing pipeline information.
+	* @param pipex A pointer to a t_pipex structure containing
+	* pipeline information.
  * @param envp An array of environment variables.
  */
 void	ft_exec(t_pipex *pipex, char **envp)
 {
 	int	i;
+	int	fd_in;
 
+	fd_in = -1;
 	i = 0;
 	while (i < pipex->cmd_count)
 	{
-		child_process(pipex, envp, i);
+		child_process(pipex, envp, i, &fd_in);
 		i++;
 	}
 	while (wait(NULL) > 0)
 		;
+	if (fd_in != -1)
+	{
+		close(fd_in);
+	}
 }

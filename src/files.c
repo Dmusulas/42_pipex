@@ -78,7 +78,8 @@ void	set_infile(char **argv, t_pipex *pipex)
 	handling here_doc case for append mode.
  *
  * @param argv The output file path.
-	* @param pipex A pointer to a t_pipex structure containing pipeline information.
+ * @param pipex A pointer to a t_pipex structure
+ * containing pipeline information.
  */
 void	set_outfile(char *argv, t_pipex *pipex)
 {
