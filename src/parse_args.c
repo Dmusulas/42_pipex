@@ -72,13 +72,15 @@ static char	*find_cmd(char *paths, char *cmd, t_pipex *pipex)
 	char	**paths_split;
 	int		i;
 
+	if (!access(cmd, X_OK))
+		return (ft_strjoin(cmd, ""));
 	paths_split = ft_split(paths, ':');
 	if (!paths_split)
 		msg_error(ERR_MALLOC, pipex);
 	i = 0;
 	while (paths_split[i])
 	{
-		full_cmd = join_paths(paths_split[i], cmd);
+		full_cmd = join_paths(paths_split[i++], cmd);
 		if (!full_cmd)
 			msg_error(ERR_MALLOC, pipex);
 		if (!access(full_cmd, X_OK))
@@ -87,7 +89,6 @@ static char	*find_cmd(char *paths, char *cmd, t_pipex *pipex)
 			return (full_cmd);
 		}
 		free(full_cmd);
-		i++;
 	}
 	free_2darray(paths_split);
 	ft_printf("%s: command not found\n", cmd);

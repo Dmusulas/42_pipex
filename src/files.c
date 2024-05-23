@@ -39,7 +39,6 @@ void	here_doc(char *limiter, t_pipex *pipex)
 			break ;
 		}
 		write(tmp_file_fd, line, ft_strlen(line));
-		write(tmp_file_fd, "\n", 1);
 		free(line);
 	}
 	close(tmp_file_fd);
