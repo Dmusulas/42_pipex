@@ -22,5 +22,5 @@ void	msg_error(char *err, t_pipex *pipex)
 	perror(err);
 	if (pipex)
 		free_pipex(pipex);
-	exit(EXIT_FAILURE);
+	exit(errno);
 }
