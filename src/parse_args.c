@@ -78,7 +78,7 @@ static char	*find_cmd(char *paths, char *cmd, t_pipex *pipex)
 	if (!paths_split)
 		msg_error(ERR_MALLOC, pipex);
 	i = 0;
-	while (paths_split[i])
+	while (paths_split[i] && cmd)
 	{
 		full_cmd = join_paths(paths_split[i++], cmd);
 		if (!full_cmd)

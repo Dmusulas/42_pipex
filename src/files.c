@@ -33,7 +33,7 @@ void	here_doc(char *limiter, t_pipex *pipex)
 	while (1)
 	{
 		line = get_next_line(0);
-		if (!line || !ft_strncmp(line, limiter, ft_strlen(line) - 1))
+		if (line[0] != '\n' && !ft_strncmp(line, limiter, ft_strlen(line) - 1))
 		{
 			free(line);
 			break ;
